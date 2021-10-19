@@ -1,0 +1,36 @@
+were going to create a notebook where we look at the different models 
+that we can implement, afater that we will try to create a web application
+where a user inputs their data and the model predicts if they qualify for the loan or 
+not.At the momemnt we are working with the dataset from kaggle.our job would be to 
+extract data from from a bank statement and and payslip.
+
+we will start with a basic dataset and then we will graduallly work our way up.
+
+-Based on the results the Logistic regression gave me the best perfomance with an f1-score 
+of 1 and an accuracy of 1. Still need to consider the size of the dataset needs to be incrased
+and the content of the data needs to be changed.
+
+-created a pickle model that we will deploy on the application with a new tutorial , this one is more 
+relevant to the project that i am doing , plus the person is implemntig neural networks. my jo would e 
+to automate the suystem. improve on the autheticatio, the ui 
+
+1.Notebook 
+
+the preprocessing steps that we took 
+1.1 dealt with missing values by dealeting columns that didn't have any values.when 
+we deal with a larger dataset what I'll do is imute the missing value with a mean or a median
+
+1.2 Encode categorical values 
+1.3 Used smote analysis to balance the data 
+1.4 Scaled the numerical values 
+
+The results that I got model that gave me 93% accuracy and 0.17 loss 
+TN = 51
+FN = 14
+FP = 11
+TP = 57
+
+2.Pickle the model
+now that we have bult our model , what we'll do is pickle it. This will allow us to make predictions 
+on different data and use it as a utility.
+

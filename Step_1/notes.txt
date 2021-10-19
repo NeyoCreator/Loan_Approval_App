@@ -1,0 +1,51 @@
+I need to take into consideration that the documents will be in images 
+that are taken from photos , so that means I'll have an inconsitent layout
+so one way to tackle this problem is by cropping out the images.
+
+
+1.ALGORITHM - Medium
+A.Read input image
+B.Crop document from image photograph 
+C.Perform OCR on the cropped image
+D.Output predicted text
+
+-Based on the algorithm that we have applied we can see that the results are based
+on the quality of the image.  think what I can do is focus on extracting the face 
+and maatching it 
+
+-I have manage to implement the algorithm from the medium post, what ill try to is create a function
+that will incoperate the code, so that i can see test the code on different images 
+
+- Manage to create a function, 
+
+
+2.AGORITHM - Google colab 
+This one is mostly suited for the work that we are doing , what we will try to do 
+is detect the card in the image and extract the information from the string.
+
+How good it performs, to be honest, its not that good. The thresholding is not producing 
+that we would like. I'll try to implement Adaptive thresholding.
+
+text2 is the value that contains our data , which is in string profmat.
+what are the most important information from This
+-name 
+-surname
+-ID number 
+
+- need more work on extraction of data, the thresholding is failing me , gives me poor results 
+at the moment I am using grayscale.The problem with it is that its not robust to images
+that have exposure to lighting.
+
+
+3.Identify Face
+What I'll do next is identify the image in the card.
+-managed to crop the faces from the text.
+
+-Been trying to load the dlib into the system
+-giving me errors with model compatibility.
+-the problem that i am facing is identifying the face from the card, I will need to implement
+the function that i created , false error there was a problem in my code.
+-create a function that will take a picture from the main camera.
+-managed to put text on the webcam
+-need to create a display to show the results.
+-need to create the function step by step, since it has some erros
