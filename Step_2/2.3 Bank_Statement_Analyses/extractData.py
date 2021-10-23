@@ -19,16 +19,15 @@ def extract_data(img):
     text = text1[text1.conf != -1]
     lines = text.groupby('block_num')['text'].apply(list)
     conf = text.groupby(['block_num'])['conf'].mean()
-
-    return text2,threshed
+    return text2
 
 # implement the function 
-img = "page0.jpg"
-txt_value, image = extract_data(img)
+img = cv2.imread("page0.jpg")
+txt_value = extract_data(img)
 
-def display(img,cmap='gray'):
-  fig = plt.figure(figsize=(12,10))
-  ax = fig.add_subplot(111)
-  ax.imshow(img,cmap='gray')
+# def display(img,cmap='gray'):
+#   fig = plt.figure(figsize=(12,10))
+#   ax = fig.add_subplot(111)
+#   ax.imshow(img,cmap='gray')
 
-display(image)
+print(txt_value)
