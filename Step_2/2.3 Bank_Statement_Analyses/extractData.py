@@ -25,9 +25,7 @@ def extract_data(img):
 img = cv2.imread("page0.jpg")
 txt_value = extract_data(img)
 
-# def display(img,cmap='gray'):
-#   fig = plt.figure(figsize=(12,10))
-#   ax = fig.add_subplot(111)
-#   ax.imshow(img,cmap='gray')
+# split the string to array
+arrValue = txt_value.split("\n")
 
-print(txt_value)
+print(arrValue[2])

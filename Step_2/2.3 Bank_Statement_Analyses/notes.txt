@@ -1,1 +1,5 @@
--managed to add add an Pdf to image convertos
+1.managed to add add an Pdf to image convertos
+2.managed to extract data from the file , now its time to obtain basic information
+based on this analysis we created a list that extracts the first values of the banks statemnt
+what is returened was a list that has a length of 317 values. What I want to do is return the name 
+of the user.
