@@ -21,3 +21,14 @@ def extract_data(img):
     conf = text.groupby(['block_num'])['conf'].mean()
 
     return text2,threshed
+
+# implement the function 
+img = "page0.jpg"
+txt_value, image = extract_data(img)
+
+def display(img,cmap='gray'):
+  fig = plt.figure(figsize=(12,10))
+  ax = fig.add_subplot(111)
+  ax.imshow(img,cmap='gray')
+
+display(image)
