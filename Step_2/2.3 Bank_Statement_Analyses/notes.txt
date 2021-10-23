@@ -3,3 +3,5 @@
 based on this analysis we created a list that extracts the first values of the banks statemnt
 what is returened was a list that has a length of 317 values. What I want to do is return the name 
 of the user.
+3.Need to find a way to structure the data, Since it has a particuler format what I need to do 
+is find a way I can place that Data.
