@@ -5,3 +5,11 @@ what is returened was a list that has a length of 317 values. What I want to do 
 of the user.
 3.Need to find a way to structure the data, Since it has a particuler format what I need to do 
 is find a way I can place that Data.
+-Managed to create a pandas dataframe,not sure if the values are correct. Its something 
+I need to look into.
+-Discovered that there are more keyword in the file that I can use As landmark 
+. "Money In", "Money Out", "Balance"
+-Need to crop segments of information. Beacuse there are some parts that I dont think I will use 
+I have noticed that some descriptions are and they end upopening spaces of new lines
+-Since we have inconsitentcy within our pdf what I will try to do is implement a library 
+to see how it handles the situation.
