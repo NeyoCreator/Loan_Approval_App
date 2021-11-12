@@ -13,3 +13,5 @@ I need to look into.
 I have noticed that some descriptions are and they end upopening spaces of new lines
 -Since we have inconsitentcy within our pdf what I will try to do is implement a library 
 to see how it handles the situation.
+- I have been trying to find a way to extract the bank statemnt data But I can't fid modules that help me 
+do that. So I will try to extract it through functions and openCV
