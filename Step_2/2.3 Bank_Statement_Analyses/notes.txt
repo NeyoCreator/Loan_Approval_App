@@ -22,3 +22,4 @@ is create a function that can accomodate all the page.
 vertically.
 -I had a problem with the stamp situatioan , but I realized that I do not need to extract Money in or Money out what 
 I have to do is find  the balance between the two.
+-The stamp is not an issue since it is situated between Money in and out we can crop out that section
