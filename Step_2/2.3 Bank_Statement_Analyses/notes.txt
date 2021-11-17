@@ -23,3 +23,10 @@ vertically.
 -I had a problem with the stamp situatioan , but I realized that I do not need to extract Money in or Money out what 
 I have to do is find  the balance between the two.
 -The stamp is not an issue since it is situated between Money in and out we can crop out that section
+
+
+#Experiment Folder 
+I tried converting the pdf to image and extracting the data using OpenCV and pytesseract, I did not work 
+since the result were inconsitent. 
+- My next appproach was to extract the data directly from the PDF, this gave me more consitent 
+results.
