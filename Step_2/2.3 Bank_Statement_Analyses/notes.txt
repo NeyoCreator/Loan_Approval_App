@@ -13,3 +13,20 @@ I need to look into.
 I have noticed that some descriptions are and they end upopening spaces of new lines
 -Since we have inconsitentcy within our pdf what I will try to do is implement a library 
 to see how it handles the situation.
+- I have been trying to find a way to extract the bank statemnt data But I can't fid modules that help me 
+do that. So I will try to extract it through functions and openCV
+- Manged to extract data from the first Page.
+-I have noticed that the first and the other pages have a different format. What I will try to do 
+is create a function that can accomodate all the page.
+-The approach that I was trying to implement is kinda flawed, What I am going to do is try and extract the data 
+vertically.
+-I had a problem with the stamp situatioan , but I realized that I do not need to extract Money in or Money out what 
+I have to do is find  the balance between the two.
+-The stamp is not an issue since it is situated between Money in and out we can crop out that section
+
+
+#Experiment Folder 
+I tried converting the pdf to image and extracting the data using OpenCV and pytesseract, I did not work 
+since the result were inconsitent. 
+- My next appproach was to extract the data directly from the PDF, this gave me more consitent 
+results.

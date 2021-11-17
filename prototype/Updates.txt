@@ -1,0 +1,4 @@
+-Manged to create Register
+-Manged to take photos
+-What I need to do is make a facematch between the two images and insert the entry into
+the data frame 
