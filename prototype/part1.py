@@ -64,11 +64,11 @@ def face_image():
             face_image.variable = "face_img_{}.png".format(img_counter)
             cv2.imwrite(face_image.variable, frame)
             print("{} written!".format(face_image.variable))
-            
+            img_counter += 1
             video.release()
             cv2.destroyAllWindows()
             
-            img_counter += 1
+            
 
             break
 
@@ -114,26 +114,36 @@ def id_card():
         
 
 # Convert images to Binary 
-def convertToBinaryData(filename):
+def convert(filename):
     # Convert digital data to binary format
     with open(filename, 'rb') as file:
         blobData = file.read()
     return blobData
 
 
+def open_bakstatementForm():
+    # Open new window
+    global part3
+    part3 = Toplevel()
+    part3.title("Bank Details")
+    part3.geometry("250x250")
+    botn_bankastatement = Button(part3, text ="Load Bank statement", command = load_bankstatement)
+    botn_bankastatement.grid(row=0, column=0, columnspan=3, padx=10,pady=10)
+
+
 # Load variables to dataframe
 def submit():
     # 1.Convert images 
-    image_face_blob = convertToBinaryData(face_image.variable)
-    image_id_blob = convertToBinaryData(id_card.variable)
+    global image_face_blob
+    global image_id_blob
+
+    image_face_blob = convert(face_image.variable)
+    image_id_blob = convert(id_card.variable)
 
 
     #load the image 
     image_face = dlib.load_rgb_image(face_image.variable)
     image_id = dlib.load_rgb_image(id_card.variable)
-
-    # 2.Create tuple for all values
-    data_tuple = (email,password,image_face_blob,image_id_blob)
 
     # 3.Match the Images
     detector = dlib.get_frontal_face_detector()
@@ -177,29 +187,23 @@ def submit():
         # Show results 
         result = "Images match"
         label_result = Label(part2, text=result)
-        label_result.grid(row=3, column=0)
+        label_result.grid(row=6, column=0)
 
-        # Create database
-        conn = sqlite3.connect('user_profile.db')
-        # 2.Create cursor
-        c = conn.cursor()
-        sqlite_insert_blob_query = """INSERT INTO users(
-            email,    
-            password,
-            image_face,
-            image_id) values(?,?,?,?)"""
+        button_continue = Button(part2, text = "Continue", command = open_bakstatementForm)
+        button_continue.grid(row=8, column=0)
 
-        c.execute(sqlite_insert_blob_query,data_tuple)    
-        # Commit Changes 
-        conn.commit()
-        # Close connection
-        conn.close()
+        print(result)
+
+
+        # #Create a new form
+        # btn_document= Button(part2, text ="Upload_document", command=open)
+        # btn_document.grid(row=2, column=0, columnspan=3, padx=10, pady=10)
     else :
         result = "Images do not match"
         label_result = Label(part2, text=result)
         label_result.grid(row=3, column=0)
 
-def open():
+def load_bankstatement():
     global my_image
     d = filedialog.askopenfilename(title="Select A file", filetypes=(("pdf files","*.pdf"),("all files","*")))
     
@@ -352,9 +356,33 @@ def open():
                 
         return statement_dictionary
 
-    #implement function 
-    
-    return print(extract_data(file_name))
+    string_dictionary = str(extract_data(file_name))
+
+    # 2.Create tuple for all values
+    data_tuple = (email,password,image_face_blob,image_id_blob,string_dictionary)
+
+
+    # insert into database
+    conn = sqlite3.connect('user_profile.db')
+    # 2.Create cursor
+    c = conn.cursor()
+    sqlite_insert_blob_query = """INSERT INTO users(
+        email,    
+        password,
+        image_face,
+        image_id,
+        bank_data
+        ) values(?,?,?,?,?)"""
+
+    c.execute(sqlite_insert_blob_query,data_tuple)    
+    # Commit Changes 
+    conn.commit()
+    # Close connection
+    conn.close()
+
+    Label(part3, text = "Your data has been saved to our database").grid(row=2,column=0)
+     
+    #print(extract_data(file_name))
 
 
      
@@ -373,7 +401,8 @@ def sign_up():
         email TEXT NOT NULL,    
         password TEXT NOT NULL,
         image_face BLOB NOT NULL,
-        image_id BLOB NOT NULL
+        image_id BLOB NOT NULL,
+        bank_data TEXT NOT NULL
         )""")
     # Commit Changes 
     conn.commit()
@@ -395,9 +424,6 @@ def sign_up():
     btn_card = Button(part2, text ="Take ID card", command= id_card)
     btn_card.grid(row=1, column=0, columnspan=3, padx=10, pady=10)
 
-    btn_document= Button(part2, text ="Upload_document", command=open)
-    btn_document.grid(row=2, column=0, columnspan=3, padx=10, pady=10)
-
     btn_submit= Button(part2, text ="Submit",command = submit)
     btn_submit.grid(row=3, column=0, columnspan=3, padx=10, pady=10)
 
@@ -418,4 +444,3 @@ myButton.grid(row=2, column=0,columnspan=3,padx=10,pady=10)
 
 
 root.mainloop()
-#END
