@@ -2,3 +2,4 @@
 -Manged to take photos
 -What I need to do is make a facematch between the two images and insert the entry into
 the data frame 
+-Manged to convert a dictionary to string and vice versa

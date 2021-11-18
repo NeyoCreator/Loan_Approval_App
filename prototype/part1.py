@@ -14,6 +14,9 @@ import numpy as np
 import tkinter as tk 
 from tkinter import  messagebox  
 from PIL import ImageTk, Image
+from tkinter import filedialog
+import fitz  # this is pymupdf
+import pandas as pd
 
 #BEGIN
 
@@ -61,10 +64,16 @@ def face_image():
             face_image.variable = "face_img_{}.png".format(img_counter)
             cv2.imwrite(face_image.variable, frame)
             print("{} written!".format(face_image.variable))
-            img_counter += 1
+            
             video.release()
             cv2.destroyAllWindows()
+            
+            img_counter += 1
+
             break
+
+        
+
     
     
     
@@ -190,6 +199,165 @@ def submit():
         label_result = Label(part2, text=result)
         label_result.grid(row=3, column=0)
 
+def open():
+    global my_image
+    d = filedialog.askopenfilename(title="Select A file", filetypes=(("pdf files","*.pdf"),("all files","*")))
+    
+    #name of the directory
+    print(d)
+
+    position = 0
+    #Extract filename
+    for x , y in enumerate(d):
+        if "/" in y :
+            position = x
+
+    #define file name
+    file_name = d[position+1:len(d)]
+
+    #Extract data
+    def extract_data(location):
+        #1.Opening file 
+        with fitz.open(location) as doc:
+            text = ""
+            for x, page in enumerate(doc):
+                text += page.getText()
+
+        #Create list from string
+        data_array = text.split("\n")
+
+        #Counting Pages
+        counter = 0
+        for x,y in enumerate(data_array):
+            if "Page" in data_array[x]:
+                counter +=1
+                data_array[x] = str(counter)
+
+        #2.Combine the pages
+        #Begin
+        combined_list = []
+        x = 2
+        combined_list = data_array[data_array.index("Balance (R)")+1:data_array.index(str(x))-1]
+
+        #Body
+        while x <counter:
+            x += 1
+            if (x < 4):
+                combined_list += data_array[data_array.index(str(x))+6:data_array.index(str(x+1))-1]
+                
+            else :
+                break
+
+        # Ending    
+        combined_list += data_array[data_array.index(str(x))+6:data_array.index("End")]
+
+        # Fix description Error
+        page1 = combined_list
+        # Identify if the charcter is a letter
+        for x ,y in enumerate(page1):
+
+            #Check if the character is alphabet
+            if page1[x][:1].isalpha() :
+                #print(page1[x])
+                #Check if its next character is alaphabet
+                if  "." not in page1[x+1]:
+                    page1[x] = page1[x] +" "+page1[x+1]
+                    page1[x+1] = ""
+        # Delete empty spaces
+        page1 = [x for x in page1 if x]
+
+
+        # Delete Money In Out
+        page1[3] =""
+
+        #Looping through the list
+        x = 3
+        while x < len(page1):
+            x+= 5
+            if (x <len(page1)):
+                page1[x]= ""
+            else :
+                break
+
+        page1 = [x for x in page1 if x]
+
+        #Posting Date
+        posting_list = []
+
+        #Looping through the list
+        x = 0
+        posting_list.append(page1[0])
+        while x < len(page1):
+            x+= 4
+            if (x <len(page1)):
+                posting_list.append(page1[x])
+
+            else :
+                break
+
+
+        # Transaction Date
+        transaction_list = []
+
+        #Looping through the list 
+        x = 1
+        transaction_list.append(page1[x])
+
+        while x < len(page1):
+            x+= 4
+            if (x <len(page1)):
+                transaction_list.append(page1[x])
+            else :
+                break
+
+
+        # Description 
+        description_list = []
+
+        #Looping through the list 
+        x = 2
+        description_list.append(page1[x])
+
+        while x < len(page1):
+            x+= 4
+            if (x <len(page1)):
+                description_list.append(page1[x])
+            else :
+                break
+
+
+        #Balance List   
+        balance_list = []
+        #Looping through the list 
+        x = 3
+        balance_list.append(page1[x])
+
+        while x < len(page1):
+            x+= 4
+            if (x <len(page1)):
+                balance_list.append(page1[x])
+            else :
+                break
+
+
+        # Data frame
+        statement_dictionary = {"Posting Date": posting_list,
+                                "Transaction Date":transaction_list, 
+                                "Description": description_list,
+                                "Balance": balance_list
+        }
+
+        #Create Pandas dataframe
+        #statement_df = pd.DataFrame(statement_dictionary)
+                
+        return statement_dictionary
+
+    #implement function 
+    
+    return print(extract_data(file_name))
+
+
+     
     
 # Sign up user to application
 def sign_up():
@@ -226,8 +394,13 @@ def sign_up():
     btn_image.grid(row=0, column=0, columnspan=3, padx=10,pady=10)
     btn_card = Button(part2, text ="Take ID card", command= id_card)
     btn_card.grid(row=1, column=0, columnspan=3, padx=10, pady=10)
+
+    btn_document= Button(part2, text ="Upload_document", command=open)
+    btn_document.grid(row=2, column=0, columnspan=3, padx=10, pady=10)
+
     btn_submit= Button(part2, text ="Submit",command = submit)
-    btn_submit.grid(row=2, column=0, columnspan=3, padx=10, pady=10)
+    btn_submit.grid(row=3, column=0, columnspan=3, padx=10, pady=10)
+
 
 #email_entry
 mail_ent = Entry(root,width = 35,borderwidth=5)
