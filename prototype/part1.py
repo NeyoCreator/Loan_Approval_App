@@ -14,6 +14,9 @@ import numpy as np
 import tkinter as tk 
 from tkinter import  messagebox  
 from PIL import ImageTk, Image
+from tkinter import filedialog
+import fitz  # this is pymupdf
+import pandas as pd
 
 #BEGIN
 
@@ -64,7 +67,13 @@ def face_image():
             img_counter += 1
             video.release()
             cv2.destroyAllWindows()
+            
+            
+
             break
+
+        
+
     
     
     
@@ -105,26 +114,36 @@ def id_card():
         
 
 # Convert images to Binary 
-def convertToBinaryData(filename):
+def convert(filename):
     # Convert digital data to binary format
     with open(filename, 'rb') as file:
         blobData = file.read()
     return blobData
 
 
+def open_bakstatementForm():
+    # Open new window
+    global part3
+    part3 = Toplevel()
+    part3.title("Bank Details")
+    part3.geometry("250x250")
+    botn_bankastatement = Button(part3, text ="Load Bank statement", command = load_bankstatement)
+    botn_bankastatement.grid(row=0, column=0, columnspan=3, padx=10,pady=10)
+
+
 # Load variables to dataframe
 def submit():
     # 1.Convert images 
-    image_face_blob = convertToBinaryData(face_image.variable)
-    image_id_blob = convertToBinaryData(id_card.variable)
+    global image_face_blob
+    global image_id_blob
+
+    image_face_blob = convert(face_image.variable)
+    image_id_blob = convert(id_card.variable)
 
 
     #load the image 
     image_face = dlib.load_rgb_image(face_image.variable)
     image_id = dlib.load_rgb_image(id_card.variable)
-
-    # 2.Create tuple for all values
-    data_tuple = (email,password,image_face_blob,image_id_blob)
 
     # 3.Match the Images
     detector = dlib.get_frontal_face_detector()
@@ -168,28 +187,205 @@ def submit():
         # Show results 
         result = "Images match"
         label_result = Label(part2, text=result)
-        label_result.grid(row=3, column=0)
+        label_result.grid(row=6, column=0)
 
-        # Create database
-        conn = sqlite3.connect('user_profile.db')
-        # 2.Create cursor
-        c = conn.cursor()
-        sqlite_insert_blob_query = """INSERT INTO users(
-            email,    
-            password,
-            image_face,
-            image_id) values(?,?,?,?)"""
+        button_continue = Button(part2, text = "Continue", command = open_bakstatementForm)
+        button_continue.grid(row=8, column=0)
 
-        c.execute(sqlite_insert_blob_query,data_tuple)    
-        # Commit Changes 
-        conn.commit()
-        # Close connection
-        conn.close()
+        print(result)
+
+
+        # #Create a new form
+        # btn_document= Button(part2, text ="Upload_document", command=open)
+        # btn_document.grid(row=2, column=0, columnspan=3, padx=10, pady=10)
     else :
         result = "Images do not match"
         label_result = Label(part2, text=result)
         label_result.grid(row=3, column=0)
 
+def load_bankstatement():
+    global my_image
+    d = filedialog.askopenfilename(title="Select A file", filetypes=(("pdf files","*.pdf"),("all files","*")))
+    
+    #name of the directory
+    print(d)
+
+    position = 0
+    #Extract filename
+    for x , y in enumerate(d):
+        if "/" in y :
+            position = x
+
+    #define file name
+    file_name = d[position+1:len(d)]
+
+    #Extract data
+    def extract_data(location):
+        #1.Opening file 
+        with fitz.open(location) as doc:
+            text = ""
+            for x, page in enumerate(doc):
+                text += page.getText()
+
+        #Create list from string
+        data_array = text.split("\n")
+
+        #Counting Pages
+        counter = 0
+        for x,y in enumerate(data_array):
+            if "Page" in data_array[x]:
+                counter +=1
+                data_array[x] = str(counter)
+
+        #2.Combine the pages
+        #Begin
+        combined_list = []
+        x = 2
+        combined_list = data_array[data_array.index("Balance (R)")+1:data_array.index(str(x))-1]
+
+        #Body
+        while x <counter:
+            x += 1
+            if (x < 4):
+                combined_list += data_array[data_array.index(str(x))+6:data_array.index(str(x+1))-1]
+                
+            else :
+                break
+
+        # Ending    
+        combined_list += data_array[data_array.index(str(x))+6:data_array.index("End")]
+
+        # Fix description Error
+        page1 = combined_list
+        # Identify if the charcter is a letter
+        for x ,y in enumerate(page1):
+
+            #Check if the character is alphabet
+            if page1[x][:1].isalpha() :
+                #print(page1[x])
+                #Check if its next character is alaphabet
+                if  "." not in page1[x+1]:
+                    page1[x] = page1[x] +" "+page1[x+1]
+                    page1[x+1] = ""
+        # Delete empty spaces
+        page1 = [x for x in page1 if x]
+
+
+        # Delete Money In Out
+        page1[3] =""
+
+        #Looping through the list
+        x = 3
+        while x < len(page1):
+            x+= 5
+            if (x <len(page1)):
+                page1[x]= ""
+            else :
+                break
+
+        page1 = [x for x in page1 if x]
+
+        #Posting Date
+        posting_list = []
+
+        #Looping through the list
+        x = 0
+        posting_list.append(page1[0])
+        while x < len(page1):
+            x+= 4
+            if (x <len(page1)):
+                posting_list.append(page1[x])
+
+            else :
+                break
+
+
+        # Transaction Date
+        transaction_list = []
+
+        #Looping through the list 
+        x = 1
+        transaction_list.append(page1[x])
+
+        while x < len(page1):
+            x+= 4
+            if (x <len(page1)):
+                transaction_list.append(page1[x])
+            else :
+                break
+
+
+        # Description 
+        description_list = []
+
+        #Looping through the list 
+        x = 2
+        description_list.append(page1[x])
+
+        while x < len(page1):
+            x+= 4
+            if (x <len(page1)):
+                description_list.append(page1[x])
+            else :
+                break
+
+
+        #Balance List   
+        balance_list = []
+        #Looping through the list 
+        x = 3
+        balance_list.append(page1[x])
+
+        while x < len(page1):
+            x+= 4
+            if (x <len(page1)):
+                balance_list.append(page1[x])
+            else :
+                break
+
+
+        # Data frame
+        statement_dictionary = {"Posting Date": posting_list,
+                                "Transaction Date":transaction_list, 
+                                "Description": description_list,
+                                "Balance": balance_list
+        }
+
+        #Create Pandas dataframe
+        #statement_df = pd.DataFrame(statement_dictionary)
+                
+        return statement_dictionary
+
+    string_dictionary = str(extract_data(file_name))
+
+    # 2.Create tuple for all values
+    data_tuple = (email,password,image_face_blob,image_id_blob,string_dictionary)
+
+
+    # insert into database
+    conn = sqlite3.connect('user_profile.db')
+    # 2.Create cursor
+    c = conn.cursor()
+    sqlite_insert_blob_query = """INSERT INTO users(
+        email,    
+        password,
+        image_face,
+        image_id,
+        bank_data
+        ) values(?,?,?,?,?)"""
+
+    c.execute(sqlite_insert_blob_query,data_tuple)    
+    # Commit Changes 
+    conn.commit()
+    # Close connection
+    conn.close()
+
+    Label(part3, text = "Your data has been saved to our database").grid(row=2,column=0)
+     
+    #print(extract_data(file_name))
+
+
+     
     
 # Sign up user to application
 def sign_up():
@@ -205,7 +401,8 @@ def sign_up():
         email TEXT NOT NULL,    
         password TEXT NOT NULL,
         image_face BLOB NOT NULL,
-        image_id BLOB NOT NULL
+        image_id BLOB NOT NULL,
+        bank_data TEXT NOT NULL
         )""")
     # Commit Changes 
     conn.commit()
@@ -226,8 +423,10 @@ def sign_up():
     btn_image.grid(row=0, column=0, columnspan=3, padx=10,pady=10)
     btn_card = Button(part2, text ="Take ID card", command= id_card)
     btn_card.grid(row=1, column=0, columnspan=3, padx=10, pady=10)
+
     btn_submit= Button(part2, text ="Submit",command = submit)
-    btn_submit.grid(row=2, column=0, columnspan=3, padx=10, pady=10)
+    btn_submit.grid(row=3, column=0, columnspan=3, padx=10, pady=10)
+
 
 #email_entry
 mail_ent = Entry(root,width = 35,borderwidth=5)
@@ -245,4 +444,3 @@ myButton.grid(row=2, column=0,columnspan=3,padx=10,pady=10)
 
 
 root.mainloop()
-#END
