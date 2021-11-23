@@ -1,1 +1,5 @@
-We will try to tinker with the application on dj
+Try to create the application using django 
+-I tried creating the application and and having a virtual enviroment for my packages but 
+that created problems when I had to push the project to Git 
+-I will create an envroment for my final project 
+-This project will be tinkering on the pages 
