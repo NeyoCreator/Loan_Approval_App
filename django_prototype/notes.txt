@@ -3,3 +3,5 @@ Try to create the application using django
 that created problems when I had to push the project to Git 
 -I will create an envroment for my final project 
 -This project will be tinkering on the pages 
+-Manged to upload images and display on screen
+-The next process will be adding the Id to the mix
