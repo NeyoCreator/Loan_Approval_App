@@ -30,15 +30,17 @@ def register_account(request):
     return render(request,"register.html",context)
 
 def register_personal_details(request):
-    #Process Images Uploaded by user
+    """Process images uploaded by users""" 
     if request.method == "POST":
         form = Personal_Detail_form(request.POST,request.FILES)
         if form.is_valid():
-            form.save()
-            #Get the current instance to diplay in the template
-            img_obj = form.instance
-            return render(request,'personal_details.html', {'form':form, 'img_obj':img_obj})
+             form.save()
+             #Get the current instance to diplay in the template
+             img_obj = form.instance
+             
+             return render(request,'personal_details.html', {'form':form, 'img_obj':img_obj})
             
-        else :
-            form = Personal_Detail_form()
-        return  render(request,"personal_details.html", {'form':form})
+    else :
+        form = Personal_Detail_form()
+    return  render(request,"personal_details.html", {'form':form})
+        

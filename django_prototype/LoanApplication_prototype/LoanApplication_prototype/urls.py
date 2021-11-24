@@ -15,6 +15,5 @@ urlpatterns = [
     path('personal_details/',views.register_personal_details)
 
 ]
-
 if settings.DEBUG:
      urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -9,8 +9,10 @@ class Account(models.Model):
 
 #Model 2 
 class Personal_Details(models.Model):
-    title = models.CharField(max_length=120, default=True)
-    image = models.ImageField(upload_to='media')
-    #Extracted text
+    title_face = models.CharField(max_length=120, default=True)
+    image_face = models.ImageField(upload_to='media')
+    title_ID = models.CharField(max_length=120, default=True)
+    image_ID = models.ImageField(upload_to='media')
+
     def __str__(self):
-        return self.title
+        return self.title_face, self.title_ID

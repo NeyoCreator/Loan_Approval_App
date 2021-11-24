@@ -12,4 +12,4 @@ class AccountForm(forms.ModelForm):
 class Personal_Detail_form(forms.ModelForm):
     class Meta:
         model = Personal_Details
-        fields = ['title','image']
+        fields = ['title_face','image_face','title_ID','image_ID']
